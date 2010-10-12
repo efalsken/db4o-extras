@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using Db4objects.Db4o.AutoIncrement;
 
-namespace Db4objects.Db4o.AutoIncrement {
-	public class ExampleClass {
+namespace Example {
+	public class ExampleModel {
 
 		[AutoIncrement]
 		public int IdAutoProperty { get; set; }
