@@ -1,0 +1,8 @@
+#summary Instructions for getting started with the db4o-extras for .NET
+#labels .NET
+
+=Getting Started=
+
+To get started, download the [https://db4o-extras.googlecode.com/svn/trunk/net net branch] from source control, open the included solution and compile. If you have [http://tortoisesvn.net/ TortoiseSVN] and either [http://ankhsvn.open.collab.net/ AnkhSVN] or [http://www.visualsvn.com/visualsvn/ VisualSVN] installed, you can open the solution directly from within Visual Studio. Use the `File > Open > Subversion Project` menu item.
+
+Once you have the project open, the projects are set up to compile using the dependencies in the `net/lib` folder. You should not have to download or install anything else. Note that if you wish to use a different version of db4o than included here, just replace the Db4objects.Db4o.dll file in the `lib/db4o/net-4.0` folder.
