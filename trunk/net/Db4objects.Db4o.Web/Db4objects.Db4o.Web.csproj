@@ -8,8 +8,8 @@
     <ProjectGuid>{214E0742-83E4-4474-A1A6-385C484864A7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Db4objects.Db4o.Web2</RootNamespace>
-    <AssemblyName>Db4objects.Db4o.Web2</AssemblyName>
+    <RootNamespace>Db4objects.Db4o.Web</RootNamespace>
+    <AssemblyName>Db4objects.Db4o.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
