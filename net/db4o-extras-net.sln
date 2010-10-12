@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Web", "Db4objects.Db4o.Web\Db4objects.Db4o.Web.csproj", "{214E0742-83E4-4474-A1A6-385C484864A7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Projects", "Test Projects", "{CBC75F3F-748A-49D4-AEF8-F31BFC580187}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = db4o-extras-net.vsmdi
@@ -84,5 +86,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7FAD3F9F-AD53-4D3C-A5FB-1E928C4329AC} = {CBC75F3F-748A-49D4-AEF8-F31BFC580187}
+		{B7E02CE4-1A7B-4206-A1B3-0AA0F1B375A1} = {CBC75F3F-748A-49D4-AEF8-F31BFC580187}
 	EndGlobalSection
 EndGlobal
