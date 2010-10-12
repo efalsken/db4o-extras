@@ -47,6 +47,9 @@
   <ItemGroup>
     <Compile Include="AutoIncrementAttribute.cs" />
     <Compile Include="AutoIncrementSupport.cs" />
+    <Content Include="ExampleClass.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="IdGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
