@@ -4,7 +4,7 @@
 
 To get started, download the [https://db4o-extras.googlecode.com/svn/trunk/java Java branch] from source control. There are two directories. In the 'server' directory contains a db4o Java server. The 'extra' directory contains the other extras.
 
-== Gettring Started With The Server == 
+== Getting Started With The Server == 
 The server is build using [http://ant.apache.org/ Apache Ant]. You can call the 'ant'-command in the server directory. The result is in the target/dist directory. 
 
 The distribution has this layout:
@@ -16,9 +16,11 @@ The distribution has this layout:
     * lib/ The db4o & supporting jars
     * log/ The directory which the logs are written to
 
+Run the server by executing the db4o-server install / start / stop commands. On Windows you need to execute the commands in an admin console. On Linux and MacOSX you need to execute the command with root-priviliges.
 
 
-== Gettring Started With The Extras ==
+
+== Getting Started With The Extras ==
 The extras are build using [http://maven.apache.org/ Apache Maven]. You can call mvn package to build the project.
 
 Or you can open the project you're favorite IDE, using a maven plugin. 
