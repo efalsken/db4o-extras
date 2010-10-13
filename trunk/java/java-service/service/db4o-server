@@ -12,7 +12,7 @@
 
 # Application
 APP_NAME="db4o-server"
-APP_LONG_NAME="db4o on a web application"
+APP_LONG_NAME="db4o-server application"
 
 if [ "X$APP_BASE" = "X" ]; then
   APP_BASE=..
