@@ -1,0 +1,43 @@
+<project name="db4o service wrapper" default="dist" basedir=".">
+    <property name="target" value="${basedir}/target"/>
+    <property name="classes" value="${target}/bin"/>
+
+    <property name="dist" value="${target}/dist"/>
+    <property name="lib" value="${dist}/lib"/>
+    <property name="bin" value="${dist}/bin"/>
+    <property name="conf" value="${dist}/conf"/>
+
+    
+    <target name="clean">
+        <delete dir="${target}"/>
+    </target>
+    <target name="init">
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${classes}"/>
+        <mkdir dir="${bin}"/>
+        <mkdir dir="${lib}"/>
+        <mkdir dir="${conf}"/>
+    </target>
+    <path id="classpath">
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    <target name="compile" depends="init">
+        <javac srcdir="src"
+               destdir="${classes}"
+               classpathref="classpath"
+                />
+    </target>
+    <target name="package" depends="compile">
+        <jar destfile="${lib}/serviceWrapper.jar" basedir="${classes}"/>
+        <copydir src="lib" dest="${lib}"/>
+        <copydir src="service" dest="${bin}"/>
+        <copydir src="conf" dest="${conf}"/>
+        <mkdir dir="${dist}/logs" />
+        <mkdir dir="${dist}/datamodel" />
+    </target>
+    <target name="dist" depends="clean,package">
+    </target>
+    <target name="debugdist" depends="package"/>
+</project>
