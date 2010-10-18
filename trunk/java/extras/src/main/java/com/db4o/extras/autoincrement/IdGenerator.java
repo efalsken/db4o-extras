@@ -20,8 +20,16 @@ class IdGenerator {
 
     synchronized void storeState(ObjectContainer container) {
         if (null != state) {
-            container.store(state);
+            if (onlyNeedUpdate(container)) {
+                container.store(state.currentHighestIds);
+            } else {
+                container.store(state);
+            }
         }
+    }
+
+    private boolean onlyNeedUpdate(ObjectContainer container) {
+        return container.ext().isStored(state);
     }
 
     private PersistedAutoIncrements ensureLoadedIncrements(ObjectContainer container) {

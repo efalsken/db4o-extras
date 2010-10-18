@@ -68,7 +68,7 @@ public class TestAutoIncrementSupport {
         container.close();
 
         ObjectContainer newContainer = newInstance();
-        assertEquals(storeNewId(newContainer).getGeneratedIds(), 2);
+        assertEquals(storeNewId(newContainer).getGeneratedIds(), 3);
     }
 
     @Test
@@ -103,7 +103,8 @@ public class TestAutoIncrementSupport {
         storeEntry(container.ext().openSession());
         container.close();
         ObjectContainer container2 = newInstance();
-        storeEntry(container2.ext().openSession());
+        int id = storeNewId(container2.ext().openSession()).getGeneratedIds();
+        assertEquals(id,3);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
