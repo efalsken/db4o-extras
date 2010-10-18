@@ -37,14 +37,32 @@ public class TestAutoIncrementGenerator {
 
     @Test
     public void storesState(){
-        ObjectContainer container1 = databases.dbInstance();
-        toTest.getNextID(WithAutoIDs.class, container1);
-        toTest.storeState(container1);
-        container1.close();
+        storeNewObject();
 
         toTest = new IdGenerator();
         ObjectContainer container2 = databases.dbInstance();
         assertEquals(increment(container2),2);
+    }
+
+    @Test
+    public void updatesState()
+    {
+        toTest = new IdGenerator();
+        storeNewObject();
+        toTest = new IdGenerator();
+        storeNewObject();
+
+        toTest = new IdGenerator();
+        ObjectContainer container2 = databases.dbInstance();
+        assertEquals(increment(container2),3);
+
+    }
+
+    private void storeNewObject() {
+        ObjectContainer container1 = databases.dbInstance();
+        toTest.getNextID(WithAutoIDs.class, container1);
+        toTest.storeState(container1);
+        container1.close();
     }
 
     private int increment(ObjectContainer container1) {
