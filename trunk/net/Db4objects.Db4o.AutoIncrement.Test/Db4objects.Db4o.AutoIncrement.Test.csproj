@@ -56,7 +56,9 @@
     <Compile Include="Model\ModelClassWithProperty.cs" />
     <Compile Include="Model\ModelClassWithReadonlyField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AutoIncrementTests.cs" />
+    <Compile Include="TestAutoIncrementGenerator.cs" />
+    <Compile Include="TestAutoIncrementSupport.cs" />
+    <Compile Include="TestTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o.AutoIncrement\Db4objects.Db4o.AutoIncrement.csproj">

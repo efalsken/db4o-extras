@@ -34,3 +34,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+// for testing purpuses
+[assembly: InternalsVisibleTo("Db4objects.Db4o.AutoIncrement.Test")]
