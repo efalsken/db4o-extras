@@ -14,12 +14,24 @@ namespace Db4objects.Db4o.AutoIncrement {
 		}
 
 		public void StoreState(IObjectContainer container) {
-			if (null != state) {
-				container.Store(state);
+            if (null != state)
+            {
+                if (OnlyNeedUpdate(container))
+                {
+                    container.Store(state.CurrentHighestIds); 
+                } else
+                {
+                    container.Store(state);  
+                }
 			}
 		}
 
-		private PersistedAutoIncrements EnsureLoadedIncrements(IObjectContainer container) {
+	    private bool OnlyNeedUpdate(IObjectContainer container)
+	    {
+	        return container.Ext().IsStored(state);
+	    }
+
+	    private PersistedAutoIncrements EnsureLoadedIncrements(IObjectContainer container) {
 			return state ?? (state = loadOrCreateState(container));
 		}
 
@@ -40,6 +52,11 @@ namespace Db4objects.Db4o.AutoIncrement {
 				currentHighestIds[type] = number;
 				return number;
 			}
+
+		    public IDictionary<Type, int> CurrentHighestIds
+		    {
+		        get { return currentHighestIds; }
+		    }
 		}
 	}
 }
