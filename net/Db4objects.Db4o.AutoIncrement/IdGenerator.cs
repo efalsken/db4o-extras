@@ -32,10 +32,10 @@ namespace Db4objects.Db4o.AutoIncrement {
 	    }
 
 	    private PersistedAutoIncrements EnsureLoadedIncrements(IObjectContainer container) {
-			return state ?? (state = loadOrCreateState(container));
+			return state ?? (state = LoadOrCreateState(container));
 		}
 
-		private static PersistedAutoIncrements loadOrCreateState(IObjectContainer container) {
+		private static PersistedAutoIncrements LoadOrCreateState(IObjectContainer container) {
 			var existingState = container.Query<PersistedAutoIncrements>().SingleOrDefault();
 			return existingState ?? new PersistedAutoIncrements();
 		}
