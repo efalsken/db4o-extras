@@ -46,6 +46,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -54,14 +55,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db4oEntityContextTests.cs" />
-    <Compile Include="Model\ModelTestEntities.cs" />
+    <Compile Include="Model\TestModelEntities.cs" />
     <Compile Include="Model\Person.cs" />
+    <Compile Include="Model\TestWebModelEntities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\TestCustomModelEntities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o.EntityFramework\Db4objects.Db4o.EntityFramework.csproj">
       <Project>{40FC561C-3D04-49A9-9462-6EB2A2E29ECA}</Project>
       <Name>Db4objects.Db4o.EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db4objects.Db4o.Web\Db4objects.Db4o.Web.csproj">
+      <Project>{214E0742-83E4-4474-A1A6-385C484864A7}</Project>
+      <Name>Db4objects.Db4o.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
