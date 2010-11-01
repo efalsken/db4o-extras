@@ -18,6 +18,7 @@ namespace Db4objects.Db4o.EntityFramework {
 
 		#region Constructor
 		public Db4oEntityContext(string dbFileName) {
+			Requires.NotNullOrEmpty("dbFileName", dbFileName);
 			CreateConnection(dbFileName);
 			OnContextCreated();
 		}
@@ -30,29 +31,26 @@ namespace Db4objects.Db4o.EntityFramework {
 		}
 
 		public Db4oEntityContext() {
-			CreateConnection(this.GetType().Name + ".db4o");
+			CreateConnection();
 			OnContextCreated();
 		}
 
-		protected void CreateConnection(string dbFileName = null) {
-			var config = OnConfigurationCreating() ?? Db4oEmbedded.NewConfiguration();
-			OnConfigurationCreated(config);
-			if (config == null) throw new InvalidOperationException("Could not create db4o Configuration.");
+		protected void CreateConnection() {
+			ObjectContainer = OnConnectionCreating();
+			OnConnectionCreated(ObjectContainer);
+		}
 
-			var db = OnConnectionCreating(config);
-			if (db == null) {
-				if (config is IEmbeddedConfiguration) {
-					db = Db4oEmbedded.OpenFile((IEmbeddedConfiguration)config, dbFileName);
-					_createdObjectContainer = true;
-				}
+		protected void CreateConnection(string dbFileName) {
+			try {
+				var config = Requires.NotNull("config", OnConfigurationCreating());
+				OnConfigurationCreated(config);
+				ObjectContainer = Db4oEmbedded.OpenFile((IEmbeddedConfiguration)config, dbFileName);
+				_createdObjectContainer = true;
 			}
-
-			if (db == null)
-				throw new InvalidOperationException("Could not create db4o ObjectContainer. (if you provided your own config, did you remember to overload OnConnectionCreating?)");
-			
-			this.ObjectContainer = db;
-			
-			OnConnectionCreated(db);
+			catch (Exception ex) {
+				throw new InvalidOperationException("Cannot create db4o database file in embedded mode.", ex);
+			}
+			OnConnectionCreated(ObjectContainer);
 		}
 		#endregion
 
@@ -162,36 +160,18 @@ namespace Db4objects.Db4o.EntityFramework {
 		#endregion
 
 		#region Events
-		public event EventHandler ContextCreated;
 		protected virtual void OnContextCreated() {
-			if (ContextCreated != null)
-				ContextCreated(this, EventArgs.Empty);
 		}
 
-		public event EventHandler<ConfigurationEventArgs> ConfigurationCreating;
 		protected virtual ICommonConfigurationProvider OnConfigurationCreating(ICommonConfigurationProvider config = null) {
-			if (ConfigurationCreating != null) {
-				var args = new ConfigurationEventArgs() { Configuration = config };
-				ConfigurationCreating(this, args);
-				return args.Configuration;
-			}
-			return config;
+			return config ?? Db4oEmbedded.NewConfiguration();
 		}
 
-		public event EventHandler<ConfigurationEventArgs> ConfigurationCreated;
-		protected void OnConfigurationCreated(ICommonConfigurationProvider config) {
-			if (ConfigurationCreated != null)
-				ConfigurationCreated(this, new ConfigurationEventArgs() { Configuration = config });
+		protected virtual void OnConfigurationCreated(ICommonConfigurationProvider config) {
 		}
 
-		public event EventHandler<ConnectionCreatingEventArgs> ConnectionCreating;
-		protected virtual IObjectContainer OnConnectionCreating(ICommonConfigurationProvider config) {
-			if(ConnectionCreating != null){
-				var args = new ConnectionCreatingEventArgs(config);
-				ConnectionCreating(this, args);
-				return args.ObjectContainer ;
-			}
-			return null;
+		protected virtual IObjectContainer OnConnectionCreating(){
+			throw new NotImplementedException("Missing custom implementation for OnConnectionCreating");
 		}
 
 		public event EventHandler<ConnectionEventArgs> ConnectionCreated;

@@ -12,9 +12,20 @@ namespace Db4objects.Db4o.EntityFramework.Test {
 		const string testFileName = "test.db4o";
 
 		[TestMethod]
-		public void TestMethod1() {
+		public void TestSimpleEmbeddedMode() {
 
-			using(var db = new Model.ModelTestEntities(testFileName)){
+			using(var db = new Model.TestModelEntities(testFileName)){
+				db.People.AddObject(new Model.Person() { Name = "Bob Burns" });
+				db.People.AddObject(new Model.Person() { Name = "Anne Anders" });
+				db.SaveChanges();
+
+				Assert.IsTrue(db.People.Count() == 2);
+			}
+		}
+
+		[TestMethod]
+		public void TestCustomImplMode() {
+			using (var db = new Model.TestCustomModelEntities()) {
 				db.People.AddObject(new Model.Person() { Name = "Bob Burns" });
 				db.People.AddObject(new Model.Person() { Name = "Anne Anders" });
 				db.SaveChanges();
