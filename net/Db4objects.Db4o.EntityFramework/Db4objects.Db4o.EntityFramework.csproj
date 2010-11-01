@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationEventArgs.cs" />
+    <Compile Include="ConnectionCreatingEventArgs.cs" />
+    <Compile Include="ConnectionEventArgs.cs" />
     <Compile Include="Db4oEntityContext.cs" />
     <Compile Include="Db4oEntitySet.cs" />
     <Compile Include="IDb4oEntitySet.cs" />

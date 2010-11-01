@@ -8,37 +8,51 @@ using System.Dynamic;
 using System.Reflection;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.EntityFramework {
 	public class Db4oEntityContext : DynamicObject, IDisposable {
-		
-		private readonly bool _createdConnection = false;
+		private bool _createdObjectContainer = false;
 		public IObjectContainer ObjectContainer { get; private set; }
 		protected List<IDb4oEntitySet> _RegisteredTypes = new List<IDb4oEntitySet>();
 
 		#region Constructor
-		public Db4oEntityContext(string dbFileName, Db4o.Config.IEmbeddedConfiguration config = null) 
-			: this(CreateConnection(dbFileName, config)){
-			_createdConnection = true;
+		public Db4oEntityContext(string dbFileName) {
+			CreateConnection(dbFileName);
+			OnContextCreated();
 		}
 
 		public Db4oEntityContext(IObjectContainer db) {
 			Requires.NotNull("db", db);
-			if (db.Ext().IsClosed()) throw new ArgumentException("ObjectContainer must still be open.", "db");
+			Requires.IsFalse(db.Ext().IsClosed());
 			ObjectContainer = db;
-			//TODO OnContextCreated
+			OnContextCreated();
 		}
 
-		private static IObjectContainer CreateConnection(string dbFileName, Db4o.Config.IEmbeddedConfiguration config = null) {
-			if (config == null) {
-				//TODO OnConfigurationCreating
-				config = Db4oEmbedded.NewConfiguration();
+		public Db4oEntityContext() {
+			CreateConnection(this.GetType().Name + ".db4o");
+			OnContextCreated();
+		}
+
+		protected void CreateConnection(string dbFileName = null) {
+			var config = OnConfigurationCreating() ?? Db4oEmbedded.NewConfiguration();
+			OnConfigurationCreated(config);
+			if (config == null) throw new InvalidOperationException("Could not create db4o Configuration.");
+
+			var db = OnConnectionCreating(config);
+			if (db == null) {
+				if (config is IEmbeddedConfiguration) {
+					db = Db4oEmbedded.OpenFile((IEmbeddedConfiguration)config, dbFileName);
+					_createdObjectContainer = true;
+				}
 			}
-			//TODO OnConfigurationCreated
-			//TODO OnConnectionCreating
-			var db = Db4oEmbedded.OpenFile(config, dbFileName);
-			//TODO OnConnectionCreated
-			return db;
+
+			if (db == null)
+				throw new InvalidOperationException("Could not create db4o ObjectContainer. (if you provided your own config, did you remember to overload OnConnectionCreating?)");
+			
+			this.ObjectContainer = db;
+			
+			OnConnectionCreated(db);
 		}
 		#endregion
 
@@ -50,7 +64,7 @@ namespace Db4objects.Db4o.EntityFramework {
 
 		protected virtual void Dispose(bool disposing) {
 			if (disposing) {
-				if (_createdConnection && this.ObjectContainer != null)
+				if (_createdObjectContainer && this.ObjectContainer != null)
 					ObjectContainer.Close();
 				this.ObjectContainer = null;
 			}
@@ -154,24 +168,37 @@ namespace Db4objects.Db4o.EntityFramework {
 				ContextCreated(this, EventArgs.Empty);
 		}
 
+		public event EventHandler<ConfigurationEventArgs> ConfigurationCreating;
+		protected virtual ICommonConfigurationProvider OnConfigurationCreating(ICommonConfigurationProvider config = null) {
+			if (ConfigurationCreating != null) {
+				var args = new ConfigurationEventArgs() { Configuration = config };
+				ConfigurationCreating(this, args);
+				return args.Configuration;
+			}
+			return config;
+		}
+
+		public event EventHandler<ConfigurationEventArgs> ConfigurationCreated;
+		protected void OnConfigurationCreated(ICommonConfigurationProvider config) {
+			if (ConfigurationCreated != null)
+				ConfigurationCreated(this, new ConfigurationEventArgs() { Configuration = config });
+		}
+
+		public event EventHandler<ConnectionCreatingEventArgs> ConnectionCreating;
+		protected virtual IObjectContainer OnConnectionCreating(ICommonConfigurationProvider config) {
+			if(ConnectionCreating != null){
+				var args = new ConnectionCreatingEventArgs(config);
+				ConnectionCreating(this, args);
+				return args.ObjectContainer ;
+			}
+			return null;
+		}
+
 		public event EventHandler<ConnectionEventArgs> ConnectionCreated;
 		protected virtual void OnConnectionCreated(IObjectContainer objectContainer) {
 			if (ConnectionCreated != null)
 				ConnectionCreated(this, new ConnectionEventArgs() { ObjectContainer = objectContainer });
 		}
-
-		public event EventHandler<ConnectionEventArgs> ConnectionCreating;
-		protected virtual IObjectContainer OnConnectionCreating() {
-			if(ConnectionCreating != null){
-				var args = new ConnectionEventArgs();
-				ConnectionCreating(this, args);
-				return args.ObjectContainer;
-			}
-			return null;
-		}
-
-		public event EventHandler ConfigurationCreated;
-		public event EventHandler<ConfigurationEventArgs> ConfigurationCreating;
 		#endregion
 
 		protected Db4oEntitySet<TEntity> GetEntitySet<TEntity>(string typeAlias) where TEntity : class {
@@ -196,7 +223,7 @@ namespace Db4objects.Db4o.EntityFramework {
 			//    throw new ArgumentException("Illegal alias name.", "typeAlias");
 
 			var osetType = typeof(Db4oEntitySet<>).MakeGenericType(type);
-			var oset = Activator.CreateInstance(typeof(Db4oEntitySet<>).MakeGenericType(type), this, typeAlias);
+			var oset = Activator.CreateInstance(osetType, this, typeAlias);
 
 			this._RegisteredTypes.Add((IDb4oEntitySet)oset);
 			return (IDb4oEntitySet)oset;
@@ -206,6 +233,10 @@ namespace Db4objects.Db4o.EntityFramework {
 			var otherObj = obj as Db4oEntityContext;
 			if (otherObj == null) return false;
 			return (otherObj.ObjectContainer == this.ObjectContainer);
+		}
+
+		public override int GetHashCode() {
+			return ObjectContainer.GetHashCode();
 		}
 	}
 }
