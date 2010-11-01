@@ -93,6 +93,7 @@ namespace Db4objects.Db4o.EntityFramework {
 		}
 		#endregion
 
+		#region CRUD
 		public void AcceptAllChanges() {
 			ObjectContainer.Commit();
 		}
@@ -120,7 +121,8 @@ namespace Db4objects.Db4o.EntityFramework {
 		public void Refresh<T>(T entity) {
 			ObjectContainer.Ext().Refresh(entity, ObjectContainer.Ext().Configure().ActivationDepth());
 		}
-
+		
+		#region Saving Changes
 		/// <summary>
 		/// Persists all changes to the database.
 		/// </summary>
@@ -129,6 +131,7 @@ namespace Db4objects.Db4o.EntityFramework {
 			ObjectContainer.Commit();
 		}
 
+		public event EventHandler SavingChanges;
 		private void OnSavingChanges() {
 			if (this.SavingChanges != null)
 				this.SavingChanges(this, EventArgs.Empty);
@@ -141,8 +144,35 @@ namespace Db4objects.Db4o.EntityFramework {
 			if (ret == null || !(ret is IQueryable<TEntity>)) return new TEntity[0].AsQueryable();
 			else return (IQueryable<TEntity>)ret;
 		}
+		#endregion
+		#endregion
 
-		public event EventHandler SavingChanges;
+		#region Events
+		public event EventHandler ContextCreated;
+		protected virtual void OnContextCreated() {
+			if (ContextCreated != null)
+				ContextCreated(this, EventArgs.Empty);
+		}
+
+		public event EventHandler<ConnectionEventArgs> ConnectionCreated;
+		protected virtual void OnConnectionCreated(IObjectContainer objectContainer) {
+			if (ConnectionCreated != null)
+				ConnectionCreated(this, new ConnectionEventArgs() { ObjectContainer = objectContainer });
+		}
+
+		public event EventHandler<ConnectionEventArgs> ConnectionCreating;
+		protected virtual IObjectContainer OnConnectionCreating() {
+			if(ConnectionCreating != null){
+				var args = new ConnectionEventArgs();
+				ConnectionCreating(this, args);
+				return args.ObjectContainer;
+			}
+			return null;
+		}
+
+		public event EventHandler ConfigurationCreated;
+		public event EventHandler<ConfigurationEventArgs> ConfigurationCreating;
+		#endregion
 
 		protected Db4oEntitySet<TEntity> GetEntitySet<TEntity>(string typeAlias) where TEntity : class {
 			var result = (from os in _RegisteredTypes
@@ -158,19 +188,10 @@ namespace Db4objects.Db4o.EntityFramework {
 			throw new ArgumentException(String.Format("Cannot find an ObjectSet mapping for type '{0}' and name '{1}'.", typeof(TEntity), typeAlias));
 		}
 
-		//protected struct NamedType {
-		//    public readonly string Name;
-		//    public readonly Type Type;
-			
-		//    public NamedType(Db4oObjectSet<object> objectSet){
-		//        this.Type = objectSet.Type;
-		//        this.Name = objectSet.Name;
-		//    }
-		//}
-
 		public IDb4oEntitySet RegisterTypeAlias(string typeAlias, Type type) {
 			if(_RegisteredTypes.Any(x => x.Name == typeAlias))
 				throw new ArgumentException("Alias is already in use.", "typeAlias");
+			//hack: this is probably a good idea, but prevents derived instances from creating strongly-typed access members.
 			//if (this.GetType().GetMembers().Any(m => m.Name == typeAlias))
 			//    throw new ArgumentException("Illegal alias name.", "typeAlias");
 
