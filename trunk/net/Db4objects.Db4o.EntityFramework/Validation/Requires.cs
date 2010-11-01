@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.EntityFramework {
 			return propertyValue;
 		}
 
-		public static void IsTrue(bool condition, string message) {
+		public static void IsTrue(bool condition, string message = null) {
 			if (!condition) {
 				throw new InvalidOperationException(message);
 			}
@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.EntityFramework {
 			IsTrue(condition, String.Format(CultureInfo.CurrentUICulture, message, args));
 		}
 
-		public static void IsFalse(bool condition, string message) {
+		public static void IsFalse(bool condition, string message = null) {
 			if (condition) {
 				throw new InvalidOperationException(message);
 			}

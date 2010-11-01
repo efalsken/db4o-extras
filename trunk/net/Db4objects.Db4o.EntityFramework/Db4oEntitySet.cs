@@ -57,9 +57,9 @@ namespace Db4objects.Db4o.EntityFramework {
 		#endregion
 
 		#region interface IObjectSet
-		public TSource AddObject(TSource entity) {
+		public void AddObject(TSource entity) {
 			Context.ObjectContainer.Store(entity);
-			return entity;
+			//return entity;
 		}
 
 		public void Attach(TSource entity) {
