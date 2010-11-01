@@ -21,7 +21,6 @@ No data annotation support of any kind. Support for System.!ComponentModel.!Data
 
   # Download and compile the Db4objects.Db4o.!EntityFramework assembly.
   # Inherit from !Db4oEntityContext to hook up your strongly-typed access members. See [http://code.google.com/p/db4o-extras/source/browse/trunk/net/Db4objects.Db4o.EntityFramework.Test/Model/ModelTestEntities.cs ModelTestEntities.cs] for an example.
-
 {{{
 using System;
 using System.Linq;
@@ -37,5 +36,17 @@ public class MyEntityContext : Db4oEntityContext{
   public Db4oEntitySet<Person> People{
     get{ return GetEntitySet<Person>("People"); }
   }
+}
+}}}
+  # Use it in your classes!
+{{{
+// Using db4o like this in your app is bad practice.
+// Open the db when your app starts up, and reuse the Context 
+// (or !IObjectContainer) as long as your application is running.
+// Web Applications please see the db4o-extras/net/Db4objects.Db4o.Web project.
+using(var db = new MyEntityContext()){
+  db.People.AddObject(new Person("Bob Burns"));
+  db.People.AddObject(new Person("Anne Anders"));
+  db.SaveChanges();
 }
 }}}
