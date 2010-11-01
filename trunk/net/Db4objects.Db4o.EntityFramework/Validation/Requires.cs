@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace Db4objects.Db4o.EntityFramework {
 	internal class Requires {
-				public static T IsTypeOf<T>(string argName, object argValue) {
+		public static T IsTypeOf<T>(string argName, object argValue) {
 			if (!(argValue is T)) {
 				throw new ArgumentException(String.Format("The argument '{0}' must be of type '{1}'.", argName, typeof(T).FullName ), argName);
 			}
@@ -67,5 +68,26 @@ namespace Db4objects.Db4o.EntityFramework {
 			}
 			return propertyValue;
 		}
+
+		public static void IsTrue(bool condition, string message) {
+			if (!condition) {
+				throw new InvalidOperationException(message);
+			}
+		}
+
+		public static void IsTrue(bool condition, string message, params object[] args) {
+			IsTrue(condition, String.Format(CultureInfo.CurrentUICulture, message, args));
+		}
+
+		public static void IsFalse(bool condition, string message) {
+			if (condition) {
+				throw new InvalidOperationException(message);
+			}
+		}
+
+		public static void IsFalse(bool condition, string message, params object[] args) {
+			IsFalse(condition, String.Format(CultureInfo.CurrentUICulture, message, args));
+		}
+
 	}
 }
