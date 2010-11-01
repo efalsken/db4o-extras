@@ -50,7 +50,6 @@
     <Compile Include="Db4oEntitySet.cs" />
     <Compile Include="IDb4oEntitySet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\Guard.cs" />
     <Compile Include="Validation\Requires.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
