@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.EntityFramework {
 
 		public event EventHandler SavingChanges;
 
-		protected Db4oEntitySet<TEntity> GetObjectSet<TEntity>(string typeAlias) where TEntity : class {
+		protected Db4oEntitySet<TEntity> GetEntitySet<TEntity>(string typeAlias) where TEntity : class {
 			var result = (from os in _RegisteredTypes
 						  where os.Type == typeof(TEntity) && os.Name == typeAlias
 						  select os).SingleOrDefault();
