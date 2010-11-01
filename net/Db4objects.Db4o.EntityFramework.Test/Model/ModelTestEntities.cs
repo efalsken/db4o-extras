@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.EntityFramework.Test.Model {
 		public ModelTestEntities(string fileName) : base(fileName) { }
 
 		public Db4oEntitySet<Person> People {
-			get { return GetObjectSet<Person>("People"); }
+			get { return GetEntitySet<Person>("People"); }
 		}
 	}
 }
