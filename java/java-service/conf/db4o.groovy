@@ -2,7 +2,7 @@ import com.db4o.io.MemoryStorage
 
 server.file='../database.db4o'
 server.port=8080
-// format is {username:passowrd}
+// format is [username:"passoword"]. For multiple users [user1:"pwd1", user2:"pwd2"]
 server.users=[sa:"sa"]
 
 // the server.config gives you native access to the db4o configuration API
